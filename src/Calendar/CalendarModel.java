@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+
 class CalendarModel {
     private final CalendarPanel calendarPanel;
     private final Calendar calendar;
@@ -28,7 +28,7 @@ class CalendarModel {
     }
 
     public int[] getCurrentMonthDays() {
-        int startDay = calendar.get(Calendar.DAY_OF_WEEK);
+        int startDay = getStartDayOfWeek();
         int numberOfDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         int[] days = new int[numberOfDays];
 
@@ -44,5 +44,11 @@ class CalendarModel {
 
     public int getCurrentDay() {
         return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    int getStartDayOfWeek() {
+        Calendar tempCalendar = (Calendar) calendar.clone();
+        tempCalendar.set(Calendar.DAY_OF_MONTH, 1);
+        return tempCalendar.get(Calendar.DAY_OF_WEEK) - 1; // Исправляем индексацию дней недели (1-воскресенье, 2-понедельник и т.д.)
     }
 }

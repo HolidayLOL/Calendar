@@ -1,15 +1,15 @@
 package Calendar;
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
+
 class CalendarPanel extends JPanel {
     private final JLabel monthLabel;
     private final JPanel daysPanel;
-    private CalendarModel calendarModel;
+    private final CalendarModel calendarModel;
 
     public CalendarPanel() {
+        calendarModel = new CalendarModel(this); // Инициализация переменной calendarModel
         setLayout(new BorderLayout());
 
         monthLabel = new JLabel("", JLabel.CENTER);
@@ -31,28 +31,41 @@ class CalendarPanel extends JPanel {
         add(controlPanel, BorderLayout.NORTH);
         add(daysPanel, BorderLayout.CENTER);
 
-        calendarModel = new CalendarModel(this);
-        updateCalendar();
+        updateCalendar(); // Вызываем метод обновления календаря
     }
 
     public void updateCalendar() {
         monthLabel.setText(calendarModel.getCurrentMonthYear());
         daysPanel.removeAll();
 
-        int[] currentMonthDays = calendarModel.getCurrentMonthDays();
-        int currentDay = calendarModel.getCurrentDay();
-
-        for (String day : calendarModel.getDaysOfWeek()) {
+        String[] daysOfWeek = calendarModel.getDaysOfWeek();
+        for (String day : daysOfWeek) {
             JLabel label = new JLabel(day, JLabel.CENTER);
             daysPanel.add(label);
         }
-        for (int day : currentMonthDays) {
-            JLabel label = new JLabel(String.valueOf(day), JLabel.CENTER);
-            if (day == currentDay) {
-                label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        int[] currentMonthDays = calendarModel.getCurrentMonthDays();
+        int currentDay = calendarModel.getCurrentDay();
+        int startDayOfWeek = calendarModel.getStartDayOfWeek();
+
+        int dayIndex = 0;
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (i == 0 && j < startDayOfWeek) {
+                    JLabel emptyLabel = new JLabel("");
+                    daysPanel.add(emptyLabel);
+                } else if (dayIndex < currentMonthDays.length) {
+                    int day = currentMonthDays[dayIndex];
+                    JLabel label = new JLabel(String.valueOf(day), JLabel.CENTER);
+                    if (day == currentDay) {
+                        label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                    }
+                    daysPanel.add(label);
+                    dayIndex++;
+                }
             }
-            daysPanel.add(label);
         }
+
         revalidate();
         repaint();
     }
