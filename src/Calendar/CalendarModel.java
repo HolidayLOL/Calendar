@@ -1,6 +1,4 @@
 package Calendar;
-import javax.swing.*;
-import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -24,17 +22,23 @@ class CalendarModel {
     }
 
     public String[] getDaysOfWeek() {
-        return new String[]{"Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"};
+        return new String[]{"Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"};
     }
 
     public int[] getCurrentMonthDays() {
-        int startDay = getStartDayOfWeek();
+        int startDay = getStartDayOfWeek(); //Получаем первый день недели текущего месяца
         int numberOfDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        int[] days = new int[numberOfDays];
+        int[] days = new int[numberOfDays + startDay]; //Добавляем пробелы для дней предыдущей недели
 
-        for (int i = 0; i < numberOfDays; i++) {
-            days[i] = i + 1;
+        Calendar tempCalendar = (Calendar) calendar.clone();
+        tempCalendar.set(Calendar.DAY_OF_MONTH, 1); //Устанавливаем текущий месяц
+        tempCalendar.add(Calendar.DAY_OF_MONTH, -startDay); //Смещаемся к первому дню предыдущей недели
+
+        for (int i = 0; i < days.length; i++) {
+            days[i] = tempCalendar.get(Calendar.DAY_OF_MONTH); //Заполняем числами дни предыдущей и текущей недели
+            tempCalendar.add(Calendar.DAY_OF_MONTH, 1); //Переходим к следующему дню
         }
+
         return days;
     }
 
@@ -49,6 +53,10 @@ class CalendarModel {
     int getStartDayOfWeek() {
         Calendar tempCalendar = (Calendar) calendar.clone();
         tempCalendar.set(Calendar.DAY_OF_MONTH, 1);
-        return tempCalendar.get(Calendar.DAY_OF_WEEK) - 1; // Исправляем индексацию дней недели (1-воскресенье, 2-понедельник и т.д.)
+        int startDay = tempCalendar.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY; //Устанавливаем понедельник как первый день недели
+        if (startDay < 0) {
+            startDay += 7; //Если первый день недели - воскресенье, сдвигаем на 7 дней назад
+        }
+        return startDay;
     }
 }
