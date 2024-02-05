@@ -1,15 +1,13 @@
 package Calendar;
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
-
 class CalendarPanel extends JPanel {
     private final JLabel monthLabel;
     private final JPanel daysPanel;
     private final CalendarModel calendarModel;
 
     public CalendarPanel() {
-        calendarModel = new CalendarModel(this); // Инициализация переменной calendarModel
+        calendarModel = new CalendarModel(this);
         setLayout(new BorderLayout());
 
         monthLabel = new JLabel("", JLabel.CENTER);
@@ -31,7 +29,7 @@ class CalendarPanel extends JPanel {
         add(controlPanel, BorderLayout.NORTH);
         add(daysPanel, BorderLayout.CENTER);
 
-        updateCalendar(); // Вызываем метод обновления календаря
+        updateCalendar();
     }
 
     public void updateCalendar() {
@@ -46,24 +44,13 @@ class CalendarPanel extends JPanel {
 
         int[] currentMonthDays = calendarModel.getCurrentMonthDays();
         int currentDay = calendarModel.getCurrentDay();
-        int startDayOfWeek = calendarModel.getStartDayOfWeek();
 
-        int dayIndex = 0;
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 7; j++) {
-                if (i == 0 && j < startDayOfWeek) {
-                    JLabel emptyLabel = new JLabel("");
-                    daysPanel.add(emptyLabel);
-                } else if (dayIndex < currentMonthDays.length) {
-                    int day = currentMonthDays[dayIndex];
-                    JLabel label = new JLabel(String.valueOf(day), JLabel.CENTER);
-                    if (day == currentDay) {
-                        label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                    }
-                    daysPanel.add(label);
-                    dayIndex++;
-                }
+        for (int day : currentMonthDays) {
+            JLabel label = new JLabel(String.valueOf(day), JLabel.CENTER);
+            if (day == currentDay) {
+                label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             }
+            daysPanel.add(label);
         }
 
         revalidate();

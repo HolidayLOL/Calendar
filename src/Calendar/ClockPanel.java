@@ -2,7 +2,6 @@ package Calendar;
 import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 class ClockPanel extends JPanel {
     private final JLabel timeLabel;
